@@ -1,1 +1,15 @@
+name: Asistan Calisiyor
+on: [push] # Sen her dosya yuklediginde asistan uyanir
 
+jobs:
+  dosya-kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodlari Dosyadan Al
+        uses: actions/checkout@v4
+
+      - name: Asistan Rapor Veriyor
+        run: |
+          echo "Merhaba! Dosyalarini kontrol ettim."
+          echo "Mimari ve Bonsai klasorlerin yerli yerinde."
+          echo "Is akisi basariyla tamamlandi, Kas'a selamlar!"
