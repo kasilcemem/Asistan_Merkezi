@@ -1,15 +1,17 @@
-name: Asistan Calisiyor
-on: [push] # Sen her dosya yuklediginde asistan uyanir
+name: Asistan Dosya Duzenliyor
+on: [push]
 
 jobs:
-  dosya-kontrol:
+  duzenleme-gorevi:
     runs-on: ubuntu-latest
     steps:
-      - name: Kodlari Dosyadan Al
+      - name: Dosyalara Erisim Sagla
         uses: actions/checkout@v4
 
-      - name: Asistan Rapor Veriyor
-        run: |
-          echo "Merhaba! Dosyalarini kontrol ettim."
-          echo "Mimari ve Bonsai klasorlerin yerli yerinde."
-          echo "Is akisi basariyla tamamlandi, Kas'a selamlar!"
+      - name: Python Kur ve Asistanı Uyandır
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Akilli Ayiklamayi Calistir
+        run: python src/asistan.py
