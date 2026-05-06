@@ -1,39 +1,61 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>ASİSTAN MERKEZİ | Kontrol Paneli</title>
-    <style>
-        body { background: #111; color: #eee; font-family: sans-serif; text-align: center; padding: 50px; }
-        .dashboard { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
-        .box { 
-            border: 2px solid #444; padding: 20px; border-radius: 15px; width: 200px;
-            transition: 0.3s; cursor: pointer; background: #222;
-        }
-        .box:hover { border-color: #00ff00; background: #333; }
-        h1 { color: #00ff00; letter-spacing: 2px; }
-        .status { color: #888; font-size: 0.8em; margin-top: 10px; }
-    </style>
-</head>
-<body>
-    <h1>ASİSTAN MERKEZİ GİRİŞ</h1>
-    <p>Workflow Aktif | Kaş İstasyonu</p>
+import os
 
-    <div class="dashboard">
-        <div class="box">
-            <h3>🏗️ Mimari</h3>
-            <p>Projeler ve Çizimler</p>
-        </div>
-        <div class="box">
-            <h3>🌳 Bonsai</h3>
-            <p>Bakım ve Sanat Notları</p>
-        </div>
-        <div class="box">
-            <h3>📻 Radyo</h3>
-            <p>Dünya Frekansları</p>
-        </div>
-    </div>
+def dashboard_guncelle():
+    # Odalarımız
+    odalar = {
+        "Mimari": "data/mimari",
+        "Bonsai": "data/bonsai",
+        "Frekans": "data/frekans"
+    }
     
-    <div class="status">Asistan sistemi GitHub üzerinde 7/24 çalışıyor.</div>
-</body>
-</html>
+    # HTML kartlarını oluşturacak kısım
+    kartlar_html = ""
+    
+    for ad, yol in odalar.items():
+        if not os.path.exists(yol):
+            os.makedirs(yol)
+        
+        dosyalar = [d for d in os.listdir(yol) if d != ".gitkeep"]
+        dosya_listesi = "".join([f"<li>{d}</li>" for d in dosyalar]) or "<li>Henüz dosya yok.</li>"
+        
+        # Her kategori için bir kutucuk (kart) oluşturuyoruz
+        kartlar_html += f"""
+        <div class="card">
+            <h3>{ad}</h3>
+            <ul>{dosya_listesi}</ul>
+            <div class="status">{len(dosyalar)} Dosya Mevcut</div>
+        </div>
+        """
+
+    # Ana HTML şablonu
+    html_icerik = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Asistan Dashboard</title>
+        <style>
+            body {{ background: #0f172a; color: white; font-family: sans-serif; padding: 40px; }}
+            .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }}
+            .card {{ background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; }}
+            h1 {{ color: #38bdf8; text-align: center; }}
+            ul {{ font-size: 0.9em; color: #94a3b8; padding-left: 20px; }}
+            .status {{ margin-top: 10px; font-size: 0.8em; color: #38bdf8; }}
+        </style>
+    </head>
+    <body>
+        <h1>ASİSTAN KUMANDA PANELİ</h1>
+        <div class="grid">
+            {kartlar_html}
+        </div>
+    </body>
+    </html>
+    """
+
+    # Hazırlanan bu yeni sayfayı index.html olarak kaydet
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(html_icerik)
+    print("Asistan: Dashboard başarıyla güncellendi!")
+
+if __name__ == "__main__":
+    dashboard_guncelle()
