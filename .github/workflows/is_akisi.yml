@@ -1,17 +1,27 @@
-name: Asistan Dosya Duzenliyor
+name: Akilli Asistan Calisiyor
 on: [push]
 
+permissions:
+  contents: write # Asistanın dosyaları değiştirme izni
+
 jobs:
-  duzenleme-gorevi:
+  asistan_is_basinda:
     runs-on: ubuntu-latest
     steps:
-      - name: Dosyalara Erisim Sagla
-        uses: actions/checkout@v4
-
-      - name: Python Kur ve Asistanı Uyandır
+      - uses: actions/checkout@v4
+      
+      - name: Python Hazırla
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Akilli Ayiklamayi Calistir
+      - name: Klasörleri ve Raporu Düzenle
         run: python src/asistan.py
+
+      - name: Degisiklikleri Kaydet
+        run: |
+          git config --global user.name "AsistanBot"
+          git config --global user.email "asistan@bot.com"
+          git add .
+          git commit -m "Asistan: Dosyalar düzenlendi ve rapor güncellendi" || echo "Degisiklik yok"
+          git push
