@@ -1,38 +1,32 @@
 import os
-import shutil
 
-# 1. HEDEFLERİ BELİRLE (Odalarımız)
-MIMARI_YOL = "data/mimari"
-BONSAI_YOL = "data/bonsai"
-GELEN_KUTUSU = "gelen_kutusu" # Buraya gelenleri asistan ayıklayacak
-
-def asistan_ayikla():
-    # Eğer gelen kutusu yoksa oluştur
-    if not os.path.exists(GELEN_KUTUSU):
-        os.makedirs(GELEN_KUTUSU)
-        print("Gelen kutusu oluşturuldu. Dosyalarını oraya atabilirsin.")
-        return
-
-    # Gelen kutusundaki dosyaları tara
-    dosyalar = os.listdir(GELEN_KUTUSU)
+def listeyi_guncelle():
+    # Asistanın bakacağı odalar
+    odalar = {
+        "Mimari": "data/mimari",
+        "Bonsai": "data/bonsai",
+        "Frekans": "data/frekans"
+    }
     
-    for dosya in dosyalar:
-        dosya_adi = dosya.lower()
-        eski_yol = os.path.join(GELEN_KUTUSU, dosya)
-        
-        # AKILLI AYIRMA MANTIĞI
-        if "mimari" in dosya_adi or ".dwg" in dosya_adi:
-            yeni_yol = os.path.join(MIMARI_YOL, dosya)
-            shutil.move(eski_yol, yeni_yol)
-            print(f"✅ {dosya} -> Mimari klasörüne yerleştirildi.")
+    rapor = "## Proje Durum Raporu\n\n"
+    
+    for oda_adi, yol in odalar.items():
+        if os.path.exists(yol):
+            dosyalar = os.listdir(yol)
+            # .gitkeep dosyasını listede gösterme
+            liste = [d for d in dosyalar if d != ".gitkeep"]
             
-        elif "bonsai" in dosya_adi or "agac" in dosya_adi:
-            yeni_yol = os.path.join(BONSAI_YOL, dosya)
-            shutil.move(eski_yol, yeni_yol)
-            print(f"✅ {dosya} -> Bonsai notlarına eklendi.")
+            rapor += f"### {oda_adi} ({len(liste)} Dosya)\n"
+            if not liste:
+                rapor += "- Bu oda henüz boş.\n"
+            for d in liste:
+                rapor += f"- ✅ {d}\n"
+            rapor += "\n"
             
-        else:
-            print(f"❓ {dosya} için ne yapacağımı bilemedim, dokunmuyorum.")
+    # Bu raporu bir dosyaya yazalım ki Dashboard'da görelim
+    with open("rapor.md", "w", encoding="utf-8") as f:
+        f.write(rapor)
+    print("Asistan: Rapor hazırlandı!")
 
 if __name__ == "__main__":
-    asistan_ayikla()
+    listeyi_guncelle()
